@@ -4,10 +4,17 @@ set -u
 
 cd "$(dirname "$0")"
 
+DOMAIN="codeandstuff.se"
+
 ./prep_repo_for_deploy.sh
 
-mkdir -p /apps/codeandstuff.se
+mkdir -p "/apps/$DOMAIN"
 
-rm -rf /apps/codeandstuff.se/*
+rm -rf "/apps/$DOMAIN/*"
 
-rsync -a site/* /apps/codeandstuff.se
+rsync -a site/* "/apps/$DOMAIN"
+
+# nginx
+rsync "nginx/$DOMAIN.conf" /etc/nginx/conf.d/
+chmod 755 "/etc/nginx/conf.d/$DOMAIN.conf"
+systemctl restart nginx.service
